@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -9,19 +10,16 @@ using System.Windows.Controls;
 
 namespace ChickenShooter.Model
 {
-    public class Game
+    public class Game : INotifyPropertyChanged
     {
         private MainWindow gameWindow;
         public GameView GameView;
 
-        //private Chicken chicken;
         private List<Chicken> chickens;
         private Thread animator;
 
         private volatile bool running = false;
         private volatile bool gameOver = false;
-
-
 
         // Screen size
         public readonly int WIDTH = 800;
@@ -30,7 +28,27 @@ namespace ChickenShooter.Model
         public readonly int NUMBER_OF_CHICKENS = 10;
         public readonly double SPEED = 1;
 
-        private int numberOfShots = 10;
+        private int numberOfShots;
+        public int NumberOfShots
+        {
+            get { return numberOfShots; }
+            set
+            {
+                numberOfShots = value;
+                OnPropertyChanged("NumberOfShots");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string info)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(info));
+            }
+        }
 
         public Game()
         {
@@ -50,6 +68,7 @@ namespace ChickenShooter.Model
             if (animator == null || !running)
             {
                 InitializeGameObjects(NUMBER_OF_CHICKENS);
+                NumberOfShots = 10;
 
                 animator = new Thread(Run);
                 animator.SetApartmentState(ApartmentState.STA);
@@ -138,8 +157,9 @@ namespace ChickenShooter.Model
 
         public void Shoot()
         {
-            numberOfShots--;
-            if (numberOfShots == 0)
+            Console.WriteLine("Shot fired");
+            NumberOfShots--;
+            if (NumberOfShots == 0)
             {
                 EndGame();
             }

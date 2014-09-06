@@ -25,6 +25,7 @@ namespace ChickenShooter.Controller
             {
                 game.Hit(obj);
             }
+            // Shot fired
             game.Shoot();
         }
 
