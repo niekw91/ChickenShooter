@@ -1,7 +1,9 @@
 ﻿using ChickenShooter.Controller;
 using ChickenShooter.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +27,7 @@ namespace ChickenShooter
             Color c = Colors.Black;
             c.A = 0;
             this.Background = new SolidColorBrush(c);
+            DataContext = this;
 
             this.Height = height;
             this.Width = width;
@@ -100,6 +103,7 @@ namespace ChickenShooter
 
         public void EndGame()
         {
+            int score = game.NUMBER_OF_CHICKENS - (this.Children.Count - 2); 
             // Create label
             Label lblEnd = new Label();
             lblEnd.Content = String.Format("Game Over, you scored {0}!", game.Score);

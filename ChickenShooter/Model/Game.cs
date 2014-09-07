@@ -15,7 +15,6 @@ namespace ChickenShooter.Model
         private MainWindow gameWindow;
         public GameView GameView;
 
-        //private Chicken chicken;
         private List<Chicken> chickens;
         private List<Chicken> hitlist;
         private Thread animator;
@@ -31,7 +30,6 @@ namespace ChickenShooter.Model
         public readonly double GAME_SPEED = 5;
 
         public int Score { get; set; }
-        //public int ShotsLeft { get; set; }
         private int shotsLeft;
         public int ShotsLeft
         {
@@ -77,6 +75,7 @@ namespace ChickenShooter.Model
             if (animator == null || !running)
             {
                 InitializeGameObjects(NUMBER_OF_CHICKENS);
+                ShotsLeft = 10;
 
                 animator = new Thread(Run);
                 animator.SetApartmentState(ApartmentState.STA);
