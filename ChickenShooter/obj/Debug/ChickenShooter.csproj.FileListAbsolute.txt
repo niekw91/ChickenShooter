@@ -16,7 +16,6 @@ C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShoo
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.pdb
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\ChickenShooter.exe
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\ChickenShooter.pdb
-C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csprojResolveAssemblyReference.cache
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\MainWindow.baml
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\MainWindow.g.cs
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\App.g.cs

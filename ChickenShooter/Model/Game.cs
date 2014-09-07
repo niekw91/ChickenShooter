@@ -185,7 +185,7 @@ namespace ChickenShooter.Model
             Random rnd = new Random();
             for (int i = 0; i < chickenCount; i++)
             {
-                chickens.Add(new Chicken(rnd.Next(1, WIDTH), rnd.Next(1, HEIGHT)));
+                chickens.Add(new Chicken(rnd.Next(1, WIDTH-40), rnd.Next(1, HEIGHT-40)));
             }
         }
 
