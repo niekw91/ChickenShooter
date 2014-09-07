@@ -45,8 +45,8 @@ namespace ChickenShooter
                 for(int i = 0; i < chickens.Count; i++)
                 {
                     this.Children.Add(chickens[i].Image);
-                    Canvas.SetTop(chickens[i].Image, chickens[i].YPosition);
-                    Canvas.SetTop(chickens[i].Image, chickens[i].XPosition);
+                    //Canvas.SetTop(chickens[i].Image, chickens[i].YPosition);
+                    //Canvas.SetRight(chickens[i].Image, chickens[i].XPosition);
                 }
                 // Create shots left label
                 Label lblShots = new Label();

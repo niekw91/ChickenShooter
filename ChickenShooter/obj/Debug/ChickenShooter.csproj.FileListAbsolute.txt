@@ -23,3 +23,4 @@ C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShoo
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.g.resources
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.Properties.Resources.resources
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csproj.GenerateResource.Cache
+C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csprojResolveAssemblyReference.cache

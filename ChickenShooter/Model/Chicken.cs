@@ -25,26 +25,9 @@ namespace ChickenShooter.Model
         {
             // Initialize properties
             Size = 40;
+            Random rnd = new Random();
             XPosition = 100;
             YPosition = 100;
-            IsMovingRight = new Random().Next(0, 1) == 1 ? true : false;
-            IsMovingDown = new Random().Next(0, 1) == 1 ? true : false;
-            Speed = new Random().NextDouble();
-            // Set image
-            Bitmap = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + @"\..\..\Images\chicken.png"));
-            Image = new Image();
-            Image.Name = "imgChicken";
-            Image.Width = Size;
-            Image.Height = Size;
-            Image.Source = Bitmap;
-        }
-        public Chicken(double xposition, double yposition)
-        {
-            // Initialize properties
-            Size = 40;
-            XPosition = xposition;
-            YPosition = yposition;
-            Random rnd = new Random();
             IsMovingRight = rnd.Next(0, 1) == 1 ? true : false;
             IsMovingDown = rnd.Next(0, 1) == 1 ? true : false;
             Speed = rnd.NextDouble();
@@ -74,31 +57,31 @@ namespace ChickenShooter.Model
             Image.Source = Bitmap;
         }
 
-        public void HorizontalMovement(double gamespeed)
+        public void HorizontalMovement()
         {
             if (IsMovingRight)
             {
-                XPosition += Speed * gamespeed;
-                XTrajectory = XPosition + Speed * gamespeed;
+                XPosition += Speed;
+                XTrajectory = XPosition + Speed;
             }
             else
             {
-                XPosition -= Speed * gamespeed;
-                XTrajectory = XPosition - Speed * gamespeed;
+                XPosition -= Speed;
+                XTrajectory = XPosition - Speed;
             }
         }
-        public void VerticalMovement(double gamespeed)
+        public void VerticalMovement()
         {
 
             if (IsMovingDown)
             {
-                YPosition += Speed * gamespeed;
-                YTrajectory = YPosition + Speed * gamespeed;
+                YPosition += Speed;
+                YTrajectory = YPosition + Speed;
             }
             else
             {
-                YPosition -= Speed * gamespeed;
-                YTrajectory = YPosition - Speed * gamespeed;
+                YPosition -= Speed;
+                YTrajectory = YPosition - Speed;
             }
         }
 

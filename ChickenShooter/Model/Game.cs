@@ -132,24 +132,24 @@ namespace ChickenShooter.Model
             foreach (Chicken chicken in chickens)
             {
                 // Horizontal movement
-                if (chicken.XTrajectory < WIDTH - (chicken.Size) && chicken.XTrajectory > -100)
+                if (chicken.XTrajectory < WIDTH - (chicken.Size + 15) && chicken.XTrajectory > 0)
                 {
-                    chicken.HorizontalMovement(GAME_SPEED);
+                    chicken.HorizontalMovement();
                 }
                 else
                 {
                     chicken.ChangeHorizontalDirection();
-                    chicken.HorizontalMovement(GAME_SPEED);
+                    chicken.HorizontalMovement();
                 }
                 // Vertical movement
-                if (chicken.YTrajectory < HEIGHT - (chicken.Size + 100) && chicken.YTrajectory > -100)
+                if (chicken.YTrajectory < HEIGHT - (chicken.Size * 2) && chicken.YTrajectory > 0)
                 {
-                    chicken.VerticalMovement(GAME_SPEED);
+                    chicken.VerticalMovement();
                 }
                 else
                 {
                     chicken.ChangeVerticalDirection();
-                    chicken.VerticalMovement(GAME_SPEED);
+                    chicken.VerticalMovement();
                 }
             }
         }
@@ -185,14 +185,21 @@ namespace ChickenShooter.Model
             Random rnd = new Random();
             for (int i = 0; i < chickenCount; i++)
             {
-                chickens.Add(new Chicken(rnd.Next(1, WIDTH-40), rnd.Next(1, HEIGHT-40)));
+                // Create chicken
+                Chicken chicken = new Chicken();
+                chicken.XPosition = rnd.Next(chicken.Size * 2, WIDTH - chicken.Size * 2);
+                chicken.YPosition = rnd.Next(chicken.Size * 2, HEIGHT - chicken.Size * 2);
+                chicken.IsMovingRight = rnd.Next(0, 1) == 1 ? true : false;
+                chicken.IsMovingDown = rnd.Next(0, 1) == 1 ? true : false;
+                chicken.Speed = rnd.NextDouble() * GAME_SPEED;
+                chickens.Add(chicken);
             }
         }
 
         public void Shoot(double x, double y)
         {
-            ShotsLeft--;
-            if (ShotsLeft > 0)
+            --ShotsLeft;
+            if (ShotsLeft > 0 || chickens.Count == 0)
             {
                 foreach (Chicken chicken in chickens)
                 {
