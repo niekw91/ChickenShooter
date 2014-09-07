@@ -6,7 +6,5 @@
     <Window.Background>
         <ImageBrush ImageSource="Images\background.jpg"></ImageBrush>
     </Window.Background>
-    <Grid x:Name="GameGrid">
-        
-    </Grid>
+    <Grid x:Name="GameGrid"/>
 </Window>
