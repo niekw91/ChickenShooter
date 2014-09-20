@@ -24,3 +24,18 @@ C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShoo
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.Properties.Resources.resources
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csproj.GenerateResource.Cache
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csprojResolveAssemblyReference.cache
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\ChickenShooter.exe.config
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.exe
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.pdb
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\ChickenShooter.exe
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\ChickenShooter.pdb
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\MainWindow.baml
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\MainWindow.g.cs
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\App.g.cs
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter_MarkupCompile.cache
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.g.resources
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.Properties.Resources.resources
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csproj.GenerateResource.Cache
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csprojResolveAssemblyReference.cache
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\Newtonsoft.Json.xml

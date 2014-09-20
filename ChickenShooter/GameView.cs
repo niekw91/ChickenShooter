@@ -38,57 +38,60 @@ namespace ChickenShooter
             controller = new GameController(game);
         }
 
-        public void Initialize(List<Chicken> chickens)
+        public void Initialize(List<Animal> animals)
         {
             this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
-                for(int i = 0; i < chickens.Count; i++)
+                for(int i = 0; i < animals.Count; i++)
                 {
-                    this.Children.Add(chickens[i].Image);
-                    //Canvas.SetTop(chickens[i].Image, chickens[i].YPosition);
-                    //Canvas.SetRight(chickens[i].Image, chickens[i].XPosition);
+                    this.Children.Add(animals[i].Image);
                 }
-                // Create shots left label
-                Label lblShots = new Label();
-                lblShots.FontSize = 20;
-                lblShots.Foreground = Brushes.White;
-                lblShots.FontWeight = FontWeights.Bold;
-                Label lblShotsLeft = new Label();
-                lblShotsLeft.Content = String.Format("Shots left:");
-                lblShotsLeft.FontSize = 20;
-                lblShotsLeft.Foreground = Brushes.White;
-                lblShotsLeft.FontWeight = FontWeights.Bold;
-                // Create binding    
-                Binding binding = new Binding("ShotsLeft");
-                binding.Source = game;
-                lblShots.SetBinding(Label.ContentProperty, binding);
-                // Add elements to canvas
-                this.Children.Add(lblShotsLeft);
-                this.Children.Add(lblShots);
-                Canvas.SetRight(lblShotsLeft, 80);
-                Canvas.SetTop(lblShotsLeft, 10);
-                Canvas.SetRight(lblShots, 50);
-                Canvas.SetTop(lblShots, 10);
+                CreateLabels();
             }));
         }
 
-        public void Render(List<Chicken> chickens)
+        public void Render(List<Animal> animals)
         {
-            foreach(Chicken chicken in chickens)
+            foreach(Animal animal in animals)
             {
                 this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                 {
-                    ChickenAnimator(chicken);
+                    Animate(animal);
                 }));
             }
         }
 
-        public void ChickenAnimator(Chicken chicken)
+        private void CreateLabels()
+        {
+            // Create shots left label
+            Label lblShots = new Label();
+            lblShots.FontSize = 20;
+            lblShots.Foreground = Brushes.White;
+            lblShots.FontWeight = FontWeights.Bold;
+            Label lblShotsLeft = new Label();
+            lblShotsLeft.Content = String.Format("Shots left:");
+            lblShotsLeft.FontSize = 20;
+            lblShotsLeft.Foreground = Brushes.White;
+            lblShotsLeft.FontWeight = FontWeights.Bold;
+            // Create binding    
+            Binding binding = new Binding("ShotsLeft");
+            binding.Source = game;
+            lblShots.SetBinding(Label.ContentProperty, binding);
+            // Add elements to canvas
+            this.Children.Add(lblShotsLeft);
+            this.Children.Add(lblShots);
+            Canvas.SetRight(lblShotsLeft, 80);
+            Canvas.SetTop(lblShotsLeft, 10);
+            Canvas.SetRight(lblShots, 50);
+            Canvas.SetTop(lblShots, 10);
+        }
+
+        private void Animate(Animal animal)
         {
             TranslateTransform trans = new TranslateTransform();
-            chicken.Image.RenderTransform = trans;
-            DoubleAnimation anim1 = new DoubleAnimation(chicken.XPosition, chicken.XTrajectory, TimeSpan.FromSeconds(10));
-            DoubleAnimation anim2 = new DoubleAnimation(chicken.YPosition, chicken.YTrajectory, TimeSpan.FromSeconds(10));
+            animal.Image.RenderTransform = trans;
+            DoubleAnimation anim1 = new DoubleAnimation(animal.XPosition, animal.XTrajectory, TimeSpan.FromSeconds(10));
+            DoubleAnimation anim2 = new DoubleAnimation(animal.YPosition, animal.YTrajectory, TimeSpan.FromSeconds(10));
             trans.BeginAnimation(TranslateTransform.XProperty, anim1);
             trans.BeginAnimation(TranslateTransform.YProperty, anim2);
         }
@@ -101,9 +104,8 @@ namespace ChickenShooter
             }));
         }
 
-        public void EndGame()
-        {
-            int score = game.NUMBER_OF_CHICKENS - (this.Children.Count - 2); 
+        public void EndGame(int score)
+        { 
             // Create label
             Label lblEnd = new Label();
             lblEnd.Content = String.Format("Game Over, you scored {0}!", game.Score);

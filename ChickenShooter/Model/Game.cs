@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,11 +14,15 @@ namespace ChickenShooter.Model
 {
     public class Game : INotifyPropertyChanged
     {
+        private readonly string ANIMAL_FILE = "animals.json";
+
         private MainWindow gameWindow;
         public GameView GameView;
 
-        private List<Chicken> chickens;
-        private List<Chicken> hitlist;
+        private List<Animal> animals;
+        private Stack<Animal> hitlist;
+        private List<Breed> breeds;
+        
         private Thread animator;
 
         private volatile bool running = false;
@@ -26,6 +32,8 @@ namespace ChickenShooter.Model
         public readonly int WIDTH = 800;
         public readonly int HEIGHT = 550;
 
+        // Gameplay variables
+        public readonly int NUMBER_OF_SHOTS = 10;
         public readonly int NUMBER_OF_CHICKENS = 10;
         public readonly double GAME_SPEED = 5;
 
@@ -54,9 +62,12 @@ namespace ChickenShooter.Model
 
         public Game()
         {
+            // Load animal JSON file
+            LoadAnimals();
+
             // Initialize score and shotsleft
             Score = 0;
-            ShotsLeft = 10;
+            ShotsLeft = NUMBER_OF_SHOTS;
 
             // Initialize view
             gameWindow = new MainWindow(WIDTH, HEIGHT);
@@ -75,7 +86,6 @@ namespace ChickenShooter.Model
             if (animator == null || !running)
             {
                 InitializeGameObjects(NUMBER_OF_CHICKENS);
-                ShotsLeft = 10;
 
                 animator = new Thread(Run);
                 animator.SetApartmentState(ApartmentState.STA);
@@ -129,36 +139,36 @@ namespace ChickenShooter.Model
         private void TheChickenMovement()
         {
             Random rnd = new Random();
-            foreach (Chicken chicken in chickens)
+            foreach (Animal animal in animals)
             {
                 // Horizontal movement
-                if (chicken.XTrajectory < WIDTH - (chicken.Size + 15) && chicken.XTrajectory > 0)
+                if (animal.XTrajectory < WIDTH - (animal.Size + 15) && animal.XTrajectory > 0)
                 {
-                    chicken.HorizontalMovement();
+                    animal.HorizontalMovement();
                 }
                 else
                 {
-                    chicken.ChangeHorizontalDirection();
-                    chicken.HorizontalMovement();
+                    animal.ChangeHorizontalDirection();
+                    animal.HorizontalMovement();
                 }
                 // Vertical movement
-                if (chicken.YTrajectory < HEIGHT - (chicken.Size * 2) && chicken.YTrajectory > 0)
+                if (animal.YTrajectory < HEIGHT - (animal.Size * 2) && animal.YTrajectory > 0)
                 {
-                    chicken.VerticalMovement();
+                    animal.VerticalMovement();
                 }
                 else
                 {
-                    chicken.ChangeVerticalDirection();
-                    chicken.VerticalMovement();
+                    animal.ChangeVerticalDirection();
+                    animal.VerticalMovement();
                 }
             }
         }
 
         private void HitmanTheChickenSlayer()
         {
-            foreach (Chicken chicken in hitlist)
+            foreach (Animal animal in hitlist)
             {
-                chickens.Remove(chicken);
+                animals.Remove(animal);
             }
         }
 
@@ -166,47 +176,65 @@ namespace ChickenShooter.Model
         {
             if (!gameOver)
             {
-                GameView.Render(chickens);
+                // Remove animals in hitlist from screen
+                while (hitlist.Count != 0)
+                    GameView.Remove(hitlist.Pop().Image);
+
+                GameView.Render(animals);
             }
         }
 
         private void LoadGraphics()
         {
-            if (chickens != null)
+            if (animals != null)
             {
-                GameView.Initialize(chickens);
+                GameView.Initialize(animals);
             }
         }
 
-        public void InitializeGameObjects(int chickenCount)
+        public void InitializeGameObjects(int animalCount)
         {
-            chickens = new List<Chicken>();
-            hitlist = new List<Chicken>();
+            animals = new List<Animal>();
+            hitlist = new Stack<Animal>();
             Random rnd = new Random();
-            for (int i = 0; i < chickenCount; i++)
+            for (int i = 0; i < animalCount; i++)
             {
-                // Create chicken
-                Chicken chicken = new Chicken();
-                chicken.XPosition = rnd.Next(chicken.Size * 2, WIDTH - chicken.Size * 2);
-                chicken.YPosition = rnd.Next(chicken.Size * 2, HEIGHT - chicken.Size * 2);
-                chicken.IsMovingRight = rnd.Next(0, 1) == 1 ? true : false;
-                chicken.IsMovingDown = rnd.Next(0, 1) == 1 ? true : false;
-                chicken.Speed = rnd.NextDouble() * GAME_SPEED;
-                chickens.Add(chicken);
+                // Generate random index
+                int ind = rnd.Next(0, breeds.Count);
+                // Create animal using factory
+                Animal animal = breeds[ind].CreateAnimal();
+                // Set x and y
+                animal.XPosition = rnd.Next(animal.Size * 2, WIDTH - animal.Size * 2);
+                animal.YPosition = rnd.Next(animal.Size * 2, HEIGHT - animal.Size * 2);
+
+                animals.Add(animal);
+            }
+        }
+
+        /// <summary>
+        /// Load animals from ANIMAL_FILE
+        /// </summary>
+        private void LoadAnimals()
+        {
+            // Create streamreader and read animal JSON file
+            using (StreamReader r = new StreamReader(ANIMAL_FILE))
+            {
+                string json = r.ReadToEnd();
+                breeds = JsonConvert.DeserializeObject<List<Breed>>(json);
             }
         }
 
         public void Shoot(double x, double y)
         {
             --ShotsLeft;
-            if (ShotsLeft > 0 || chickens.Count == 0)
+            if (ShotsLeft > 0 || animals.Count == 0)
             {
-                foreach (Chicken chicken in chickens)
+                foreach (Animal animal in animals)
                 {
-                    if(chicken.IsShot(x, y))
+                    if (animal.IsShot(x, y))
                     {
                         Score += 10;
-                        hitlist.Add(chicken);
+                        hitlist.Push(animal);
                     }
                 }
             }
@@ -224,7 +252,7 @@ namespace ChickenShooter.Model
         private void EndGame()
         {
             Stop();
-            GameView.EndGame();
+            GameView.EndGame(Score);
         }
     }
 }

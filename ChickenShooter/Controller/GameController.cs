@@ -24,12 +24,8 @@ namespace ChickenShooter.Controller
             {
                 double x = e.GetPosition(this.game.GameView).X;
                 double y = e.GetPosition(this.game.GameView).Y;
+  
                 game.Shoot(x, y);
-                Image obj = ((e.Source) as Image);
-                if (obj != null)
-                {
-                    game.Hit(obj);
-                }
             }
         }
 
