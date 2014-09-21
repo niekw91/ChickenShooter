@@ -16,7 +16,6 @@ namespace ChickenShooter.Model
     {
         private readonly string ANIMAL_FILE = "animals.json";
 
-        private MainWindow gameWindow;
         public GameView GameView;
 
         private List<Animal> animals;
@@ -28,14 +27,11 @@ namespace ChickenShooter.Model
         private volatile bool running = false;
         private volatile bool gameOver = false;
 
-        // Screen size
-        public readonly int WIDTH = 800;
-        public readonly int HEIGHT = 550;
-
         // Gameplay variables
-        public readonly int NUMBER_OF_SHOTS = 10;
-        public readonly int NUMBER_OF_CHICKENS = 10;
-        public readonly double GAME_SPEED = 5;
+        public int NumberOfAnimals { get; set; }
+        public double GameSpeed { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
 
         public int Score { get; set; }
         private int shotsLeft;
@@ -59,7 +55,9 @@ namespace ChickenShooter.Model
             }
         }
 
-        public Game(int number_of_shots, int number_of_animals)
+        public ActionContainer Actions { get; set; }
+
+        public Game(int number_of_shots = 10, int number_of_animals = 10, double gameSpeed = 5)
         {
             // Load animal JSON file
             LoadAnimals();
@@ -67,20 +65,24 @@ namespace ChickenShooter.Model
             // Initialize score and shotsleft
             Score = 0;
             ShotsLeft = number_of_shots;
-            this.number_of_animals = number_of_animals;
+            NumberOfAnimals = number_of_animals;
+            GameSpeed = gameSpeed;
+
             Actions = new ActionContainer();
         }
 
         public void AddView(GameView gameView)
         {
             this.GameView = gameView;
+            Width = (int)gameView.Width;
+            Height = (int)gameView.Height;
         }
 
         public void Start()
         {
             if (animator == null || !running)
             {
-                InitializeGameObjects(this.number_of_animals);
+                InitializeGameObjects(this.NumberOfAnimals);
 
                 animator = new Thread(Run);
                 animator.SetApartmentState(ApartmentState.STA);
@@ -156,7 +158,7 @@ namespace ChickenShooter.Model
             foreach (Animal animal in animals)
             {
                 // Horizontal movement
-                if (animal.XTrajectory < WIDTH - (animal.Size + 15) && animal.XTrajectory > 0)
+                if (animal.XTrajectory < Width - (animal.Size + 15) && animal.XTrajectory > 0)
                 {
                     animal.HorizontalMovement();
                 }
@@ -166,7 +168,7 @@ namespace ChickenShooter.Model
                     animal.HorizontalMovement();
                 }
                 // Vertical movement
-                if (animal.YTrajectory < HEIGHT - (animal.Size * 2) && animal.YTrajectory > 0)
+                if (animal.YTrajectory < Height - (animal.Size * 2) && animal.YTrajectory > 0)
                 {
                     animal.VerticalMovement();
                 }
@@ -221,8 +223,8 @@ namespace ChickenShooter.Model
                 // Create animal using factory
                 Animal animal = breeds[ind].CreateAnimal();
                 // Set x and y
-                animal.XPosition = rnd.Next(animal.Size * 2, WIDTH - animal.Size * 2);
-                animal.YPosition = rnd.Next(animal.Size * 2, HEIGHT - animal.Size * 2);
+                animal.XPosition = rnd.Next(animal.Size * 2, Width - animal.Size * 2);
+                animal.YPosition = rnd.Next(animal.Size * 2, Height - animal.Size * 2);
 
                 animals.Add(animal);
             }
@@ -241,39 +243,10 @@ namespace ChickenShooter.Model
             }
         }
 
-        public void Shoot(double x, double y)
-        {
-            --ShotsLeft;
-            if (ShotsLeft > 0 || animals.Count == 0)
-            {
-                foreach (Animal animal in animals)
-                {
-                    if (animal.IsShot(x, y))
-                    {
-                        Score += 10;
-                        hitlist.Push(animal);
-                    }
-                }
-            }
-            else
-            {
-                EndGame();
-            }
-        }
-
-        public void Hit(Image img)
-        {
-            GameView.Remove(img);
-        }
-
         private void EndGame()
         {
             Stop();
             GameView.EndGame(Score);
         }
-
-        public ActionContainer Actions { get; set; }
-
-        public int number_of_animals { get; set; }
     }
 }

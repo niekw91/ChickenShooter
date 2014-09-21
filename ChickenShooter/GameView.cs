@@ -23,7 +23,6 @@ namespace ChickenShooter
         public GameView(Game game, int width, int height)
         {
             this.game = game;
-            this.controller = new GameController(game);
             // Set background transparent for mouse event detection
             Color c = Colors.Black;
             c.A = 0;
@@ -34,6 +33,11 @@ namespace ChickenShooter
             this.Width = width;
 
             this.MouseLeftButtonDown += Shoot;
+        }
+
+        public void AddController(GameController gameController)
+        {
+            this.controller = gameController;
         }
 
         private void Shoot(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -123,8 +127,8 @@ namespace ChickenShooter
 
                 this.Children.Add(lblEnd);
 
-                Canvas.SetTop(lblEnd, (game.HEIGHT / 2.5));
-                Canvas.SetLeft(lblEnd, (game.WIDTH / 3.5));
+                Canvas.SetTop(lblEnd, (game.Height / 2.5));
+                Canvas.SetLeft(lblEnd, (game.Width / 3.5));
             }));
         }
     }

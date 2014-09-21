@@ -40,6 +40,12 @@ namespace ChickenShooter
             // Add view to model
             game.AddView(GameView);
 
+            // Create controller
+            GameController gameController = new GameController(game);
+
+            // Add controller to view
+            GameView.AddController(gameController);
+
             // Start game
             game.Start();
         }
