@@ -73,10 +73,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\ActionContainer.cs" />
     <Compile Include="Model\Animal.cs" />
     <Compile Include="Model\Breed.cs" />
+    <Compile Include="Model\Bullet.cs" />
     <Compile Include="Model\Chicken.cs" />
     <Compile Include="Model\Game.cs" />
+    <Compile Include="Model\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

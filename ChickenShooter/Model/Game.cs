@@ -50,7 +50,6 @@ namespace ChickenShooter.Model
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         private void OnPropertyChanged(string info)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -60,32 +59,28 @@ namespace ChickenShooter.Model
             }
         }
 
-        public Game()
+        public Game(int number_of_shots, int number_of_animals)
         {
             // Load animal JSON file
             LoadAnimals();
 
             // Initialize score and shotsleft
             Score = 0;
-            ShotsLeft = NUMBER_OF_SHOTS;
-
-            // Initialize view
-            gameWindow = new MainWindow(WIDTH, HEIGHT);
-            GameView = new GameView(this, HEIGHT, WIDTH); // view
-            GameView.CreateController();
-
-            gameWindow.GameGrid.Children.Add(GameView);
-
-            gameWindow.Show();
-
-            Start();
+            ShotsLeft = number_of_shots;
+            this.number_of_animals = number_of_animals;
+            Actions = new ActionContainer();
         }
 
-        private void Start()
+        public void AddView(GameView gameView)
+        {
+            this.GameView = gameView;
+        }
+
+        public void Start()
         {
             if (animator == null || !running)
             {
-                InitializeGameObjects(NUMBER_OF_CHICKENS);
+                InitializeGameObjects(this.number_of_animals);
 
                 animator = new Thread(Run);
                 animator.SetApartmentState(ApartmentState.STA);
@@ -130,10 +125,29 @@ namespace ChickenShooter.Model
         private void Update()
         {
             // Remove chicken from chickens list that are on the hitlist
-            HitmanTheChickenSlayer();
-
+            DetermineTargets(Actions.ShotsFired);
+            KillTargets();
             // Move chickens
             TheChickenMovement();
+        }
+
+        private void DetermineTargets(Stack<Bullet> bullets)
+        {
+            foreach (Bullet bullet in bullets)
+            {
+                foreach (Animal animal in animals)
+                {
+                    if (animal.IsShot(bullet.X, bullet.Y))
+                    {
+                        Score += 10;
+                        hitlist.Push(animal);
+                    }
+                }
+            }
+            Actions.ShotsFired.Clear();
+            // End game if no more shots left
+            if (ShotsLeft == 0)
+                EndGame();
         }
 
         private void TheChickenMovement()
@@ -164,12 +178,15 @@ namespace ChickenShooter.Model
             }
         }
 
-        private void HitmanTheChickenSlayer()
+        private void KillTargets()
         {
             foreach (Animal animal in hitlist)
             {
                 animals.Remove(animal);
             }
+            // End game if all animals are dead
+            if (animals.Count == 0)
+                EndGame();
         }
 
         private void Render()
@@ -254,5 +271,9 @@ namespace ChickenShooter.Model
             Stop();
             GameView.EndGame(Score);
         }
+
+        public ActionContainer Actions { get; set; }
+
+        public int number_of_animals { get; set; }
     }
 }

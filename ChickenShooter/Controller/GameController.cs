@@ -14,18 +14,14 @@ namespace ChickenShooter.Controller
         public GameController(Game game)
         {
             this.game = game;
-
-            game.GameView.MouseLeftButtonDown += GameView_MouseLeftButtonDown;
         }
 
-        private void GameView_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        public void Shoot(double x, double y)
         {
             if (game.ShotsLeft != 0)
             {
-                double x = e.GetPosition(this.game.GameView).X;
-                double y = e.GetPosition(this.game.GameView).Y;
-  
-                game.Shoot(x, y);
+                --game.ShotsLeft;
+                game.Actions.ShotsFired.Push(new Bullet(x, y));
             }
         }
 

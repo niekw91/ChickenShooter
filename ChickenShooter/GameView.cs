@@ -20,9 +20,10 @@ namespace ChickenShooter
     {
         private Game game;
         private GameController controller;
-        public GameView(Game game, int height, int width)
+        public GameView(Game game, int width, int height)
         {
             this.game = game;
+            this.controller = new GameController(game);
             // Set background transparent for mouse event detection
             Color c = Colors.Black;
             c.A = 0;
@@ -31,18 +32,25 @@ namespace ChickenShooter
 
             this.Height = height;
             this.Width = width;
+
+            this.MouseLeftButtonDown += Shoot;
         }
 
-        public void CreateController()
+        private void Shoot(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            controller = new GameController(game);
+            if (game.ShotsLeft != 0)
+            {
+                double x = e.GetPosition(this.game.GameView).X;
+                double y = e.GetPosition(this.game.GameView).Y;
+                controller.Shoot(x, y);
+            }
         }
 
         public void Initialize(List<Animal> animals)
         {
             this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
-                for(int i = 0; i < animals.Count; i++)
+                for (int i = 0; i < animals.Count; i++)
                 {
                     this.Children.Add(animals[i].Image);
                 }
@@ -52,7 +60,7 @@ namespace ChickenShooter
 
         public void Render(List<Animal> animals)
         {
-            foreach(Animal animal in animals)
+            foreach (Animal animal in animals)
             {
                 this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                 {
@@ -105,15 +113,19 @@ namespace ChickenShooter
         }
 
         public void EndGame(int score)
-        { 
-            // Create label
-            Label lblEnd = new Label();
-            lblEnd.Content = String.Format("Game Over, you scored {0}!", game.Score);
-            lblEnd.FontSize = 26;
-            this.Children.Add(lblEnd);
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                // Create label
+                Label lblEnd = new Label();
+                lblEnd.Content = String.Format("Game Over, you scored {0}!", game.Score);
+                lblEnd.FontSize = 26;
 
-            Canvas.SetTop(lblEnd, (game.HEIGHT / 2.5));
-            Canvas.SetLeft(lblEnd, (game.WIDTH / 3.5));
+                this.Children.Add(lblEnd);
+
+                Canvas.SetTop(lblEnd, (game.HEIGHT / 2.5));
+                Canvas.SetLeft(lblEnd, (game.WIDTH / 3.5));
+            }));
         }
     }
 }
