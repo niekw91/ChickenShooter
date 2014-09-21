@@ -102,8 +102,8 @@ namespace ChickenShooter
         {
             TranslateTransform trans = new TranslateTransform();
             animal.Image.RenderTransform = trans;
-            DoubleAnimation anim1 = new DoubleAnimation(animal.XPosition, animal.XTrajectory, TimeSpan.FromSeconds(10));
-            DoubleAnimation anim2 = new DoubleAnimation(animal.YPosition, animal.YTrajectory, TimeSpan.FromSeconds(10));
+            DoubleAnimation anim1 = new DoubleAnimation(animal.XPosition, animal.XTrajectory, TimeSpan.FromSeconds(0));
+            DoubleAnimation anim2 = new DoubleAnimation(animal.YPosition, animal.YTrajectory, TimeSpan.FromSeconds(0));
             trans.BeginAnimation(TranslateTransform.XProperty, anim1);
             trans.BeginAnimation(TranslateTransform.YProperty, anim2);
         }
