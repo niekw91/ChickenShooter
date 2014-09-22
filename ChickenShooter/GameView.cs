@@ -50,7 +50,7 @@ namespace ChickenShooter
             }
         }
 
-        public void Initialize(List<Animal> animals)
+        public void Initialize(List<Animal> animals, Player player)
         {
             this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
@@ -58,19 +58,33 @@ namespace ChickenShooter
                 {
                     this.Children.Add(animals[i].Image);
                 }
+                this.Children.Add(player.Image);
                 CreateLabels();
             }));
         }
 
-        public void Render(List<Animal> animals)
+        public void Render(List<Animal> animals, Player player)
         {
-            foreach (Animal animal in animals)
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
-                this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                foreach (Animal animal in animals)
                 {
                     Animate(animal);
-                }));
-            }
+                }
+                AnimatePlayer(player);
+            }));
+        }
+
+        private void AnimatePlayer(Player player)
+        {
+            TranslateTransform trans = new TranslateTransform();
+            player.Image.RenderTransform = trans;
+            DoubleAnimation anim1 = new DoubleAnimation(player.X, player.XTrajectory, TimeSpan.FromSeconds(0));
+            DoubleAnimation anim2 = new DoubleAnimation(player.Y, player.YTrajectory, TimeSpan.FromSeconds(0));
+            trans.BeginAnimation(TranslateTransform.XProperty, anim1);
+            trans.BeginAnimation(TranslateTransform.YProperty, anim2);
+            player.X = player.XTrajectory;
+            player.Y = player.YTrajectory;
         }
 
         private void CreateLabels()

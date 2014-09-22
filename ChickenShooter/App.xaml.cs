@@ -42,6 +42,7 @@ namespace ChickenShooter
 
             // Create controller
             GameController gameController = new GameController(game);
+            gameWindow.KeyDown += gameController.Move.GameView_KeyDown;
 
             // Add controller to view
             GameView.AddController(gameController);

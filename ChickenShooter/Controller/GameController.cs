@@ -11,9 +11,13 @@ namespace ChickenShooter.Controller
     public class GameController
     {
         private Game game;
+        public MoveController Move { get; set; }
+
         public GameController(Game game)
         {
             this.game = game;
+            Move = new MoveController(game.Actions);
+            game.Actions.AddMovesController(Move);
         }
 
         public void Shoot(double x, double y)

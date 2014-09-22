@@ -131,6 +131,15 @@ namespace ChickenShooter.Model
             KillTargets();
             // Move chickens
             TheChickenMovement();
+            // Move player
+            player.XTrajectory = player.X + Actions.Moves.PlayerMoves[0];
+            player.YTrajectory = player.Y + Actions.Moves.PlayerMoves[1];
+            player.XTrajectory = player.XTrajectory > Width - player.Size ? Width - player.Size : player.XTrajectory;
+            player.XTrajectory = player.XTrajectory < 0 ? 0 : player.XTrajectory;
+            player.YTrajectory = player.YTrajectory > Height - player.Size*2 ? Height - player.Size : player.YTrajectory;
+            player.YTrajectory = player.YTrajectory < 0 ? 0 : player.YTrajectory;
+            
+            //Actions.Moves.Reset();
         }
 
         private void DetermineTargets(Stack<Bullet> bullets)
@@ -199,7 +208,7 @@ namespace ChickenShooter.Model
                 while (hitlist.Count != 0)
                     GameView.Remove(hitlist.Pop().Image);
 
-                GameView.Render(animals);
+                GameView.Render(animals, player);
             }
         }
 
@@ -207,7 +216,7 @@ namespace ChickenShooter.Model
         {
             if (animals != null)
             {
-                GameView.Initialize(animals);
+                GameView.Initialize(animals, player);
             }
         }
 
@@ -228,6 +237,7 @@ namespace ChickenShooter.Model
 
                 animals.Add(animal);
             }
+            player = new Player(); 
         }
 
         /// <summary>
@@ -248,5 +258,7 @@ namespace ChickenShooter.Model
             Stop();
             GameView.EndGame(Score);
         }
+
+        public Player player { get; set; }
     }
 }
