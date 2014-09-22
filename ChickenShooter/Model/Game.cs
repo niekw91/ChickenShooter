@@ -130,17 +130,23 @@ namespace ChickenShooter.Model
             // Remove animals from list that are on the hitlist
             DetermineTargets(Actions.ShotsFired);
             KillTargets();
+
             // Move player
+            PlayerMovement();
+            
+            // Move animals
+            CalculateMovement();
+        }
+
+        private void PlayerMovement()
+        {
             player.XTrajectory = player.X + Actions.Moves.PlayerMoves[0];
             player.YTrajectory = player.Y + Actions.Moves.PlayerMoves[1];
             player.XTrajectory = player.XTrajectory > Width - player.Size ? Width - player.Size : player.XTrajectory;
             player.XTrajectory = player.XTrajectory < 0 ? 0 : player.XTrajectory;
-            player.YTrajectory = player.YTrajectory > Height - player.Size*2 ? Height - player.Size : player.YTrajectory;
+            player.YTrajectory = player.YTrajectory > Height - player.Size * 2 ? Height - player.Size : player.YTrajectory;
             player.YTrajectory = player.YTrajectory < 0 ? 0 : player.YTrajectory;
-            
             //Actions.Moves.Reset();
-            // Move animals
-            CalculateMovement();
         }
 
         private void DetermineTargets(Stack<Bullet> bullets)
