@@ -57,15 +57,15 @@ namespace ChickenShooter.Model
 
         public ActionContainer Actions { get; set; }
 
-        public Game(int number_of_shots = 10, int number_of_animals = 10, double gameSpeed = 5)
+        public Game(int shotCount = 10, int animalCount = 10, double gameSpeed = 5)
         {
             // Load animal JSON file
             LoadAnimals();
 
             // Initialize score and shotsleft
             Score = 0;
-            ShotsLeft = number_of_shots;
-            NumberOfAnimals = number_of_animals;
+            ShotsLeft = shotCount;
+            NumberOfAnimals = animalCount;
             GameSpeed = gameSpeed;
 
             Actions = new ActionContainer();
@@ -108,29 +108,28 @@ namespace ChickenShooter.Model
             long lastTime = NanoTime;
             double fps = 60.0;
             double ns = 1000000000 / fps;
-            double delta = 0;
+            double dt = 0.0;
 
             while (running)
             {
                 long now = NanoTime;
-                delta += (now - lastTime) / ns;
+                dt += (now - lastTime) / ns;
                 lastTime = now;
 
-                if (delta >= 1)
+                if (dt >= 1)
                 {
-                    Update();
-                    delta--;
+                    Update(dt);
+                    dt--;
                 }
-                Render();
+                Render(dt);
+                Thread.Sleep(10);
             }
         }
-        private void Update()
+        private void Update(double dt)
         {
-            // Remove chicken from chickens list that are on the hitlist
+            // Remove animals from list that are on the hitlist
             DetermineTargets(Actions.ShotsFired);
             KillTargets();
-            // Move chickens
-            TheChickenMovement();
             // Move player
             player.XTrajectory = player.X + Actions.Moves.PlayerMoves[0];
             player.YTrajectory = player.Y + Actions.Moves.PlayerMoves[1];
@@ -140,6 +139,8 @@ namespace ChickenShooter.Model
             player.YTrajectory = player.YTrajectory < 0 ? 0 : player.YTrajectory;
             
             //Actions.Moves.Reset();
+            // Move animals
+            CalculateMovement();
         }
 
         private void DetermineTargets(Stack<Bullet> bullets)
@@ -161,7 +162,7 @@ namespace ChickenShooter.Model
                 EndGame();
         }
 
-        private void TheChickenMovement()
+        private void CalculateMovement()
         {
             Random rnd = new Random();
             foreach (Animal animal in animals)
@@ -200,7 +201,7 @@ namespace ChickenShooter.Model
                 EndGame();
         }
 
-        private void Render()
+        private void Render(double dt)
         {
             if (!gameOver)
             {
