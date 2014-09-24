@@ -146,7 +146,7 @@ namespace ChickenShooter.Model
             player.XTrajectory = player.XTrajectory < 0 ? 0 : player.XTrajectory;
             player.YTrajectory = player.YTrajectory > Height - player.Size * 2 ? Height - player.Size : player.YTrajectory;
             player.YTrajectory = player.YTrajectory < 0 ? 0 : player.YTrajectory;
-            //Actions.Moves.Reset();
+            Actions.Moves.Reset();
         }
 
         private void DetermineTargets(Stack<Bullet> bullets)
@@ -173,6 +173,11 @@ namespace ChickenShooter.Model
             Random rnd = new Random();
             foreach (Animal animal in animals)
             {
+                double compareX = Math.Abs(animal.XPosition - player.X);
+                double compareY = Math.Abs(animal.YPosition - player.Y);
+                if (compareX < 10 && compareY < 10) 
+                    EndGame();
+
                 // Horizontal movement
                 if (animal.XTrajectory < Width - (animal.Size + 15) && animal.XTrajectory > 0)
                 {
@@ -231,6 +236,9 @@ namespace ChickenShooter.Model
         {
             animals = new List<Animal>();
             hitlist = new Stack<Animal>();
+            // Create player
+            player = new Player(); 
+
             Random rnd = new Random();
             for (int i = 0; i < animalCount; i++)
             {
@@ -244,7 +252,6 @@ namespace ChickenShooter.Model
 
                 animals.Add(animal);
             }
-            player = new Player(); 
         }
 
         /// <summary>
