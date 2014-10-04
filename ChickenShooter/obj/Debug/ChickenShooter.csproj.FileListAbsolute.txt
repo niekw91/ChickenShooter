@@ -24,7 +24,6 @@ C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\C
 C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.g.resources
 C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.Properties.Resources.resources
 C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csproj.GenerateResource.Cache
-C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csprojResolveAssemblyReference.cache
 C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\Newtonsoft.Json.xml
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\bin\Debug\Newtonsoft.Json.dll
@@ -40,3 +39,4 @@ C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShoo
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csproj.GenerateResource.Cache
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.exe
 C:\Users\st\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.pdb
+C:\Users\Niek Willems\Documents\GitHub\ChickenShooter\ChickenShooter\obj\Debug\ChickenShooter.csprojResolveAssemblyReference.cache

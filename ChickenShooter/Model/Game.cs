@@ -9,23 +9,30 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace ChickenShooter.Model
 {
     public class Game : INotifyPropertyChanged
     {
-        private readonly string ANIMAL_FILE = "animals.json";
-
         public GameView GameView;
 
-        private List<Animal> animals;
-        private Stack<Animal> hitlist;
-        private List<Breed> breeds;
-        
+        private readonly string ANIMAL_FILE = "animals.json";
+
+        public Player Player { get; set; }
+
+        public BaseLevelState Level { get; set; }
+
+        public List<Animal> Animals { get; set; }
+        public Stack<Animal> Hitlist { get; set; }
+        public List<Breed> Breeds { get; set; }
+
+        public ActionContainer Actions { get; set; }
+
         private Thread animator;
 
-        private volatile bool running = false;
-        private volatile bool gameOver = false;
+        public volatile bool running = false;
+        public volatile bool gameOver = false;
 
         // Gameplay variables
         public int NumberOfAnimals { get; set; }
@@ -34,6 +41,7 @@ namespace ChickenShooter.Model
         public int Height { get; set; }
 
         public int Score { get; set; }
+
         private int shotsLeft;
         public int ShotsLeft
         {
@@ -42,6 +50,17 @@ namespace ChickenShooter.Model
             {
                 shotsLeft = value;
                 OnPropertyChanged("ShotsLeft");
+            }
+        }
+
+        private int stage;
+        public int Stage
+        {
+            get { return stage; }
+            set
+            {
+                stage = value;
+                OnPropertyChanged("Stage");
             }
         }
 
@@ -55,20 +74,25 @@ namespace ChickenShooter.Model
             }
         }
 
-        public ActionContainer Actions { get; set; }
-
         public Game(int shotCount = 10, int animalCount = 10, double gameSpeed = 5)
         {
-            // Load animal JSON file
-            LoadAnimals();
+            // Create levels
+            new LevelOne(this, @"../../Images/background.jpg");
+            new LevelTwo(this, @"../../Images/background-stage-2.jpg");
+            new LevelFinished(this, null);
 
-            // Initialize score and shotsleft
-            Score = 0;
-            ShotsLeft = shotCount;
-            NumberOfAnimals = animalCount;
-            GameSpeed = gameSpeed;
+            // Set game level
+            SetLevel(LevelFactory.GetFirstLevel());
 
             Actions = new ActionContainer();
+
+            ResetGameStats();
+        }
+
+        public void SetLevel(BaseLevelState level)
+        {
+            if (level != null)
+                this.Level = level;
         }
 
         public void AddView(GameView gameView)
@@ -82,6 +106,9 @@ namespace ChickenShooter.Model
         {
             if (animator == null || !running)
             {
+                // Load animal JSON file
+                LoadAnimals();
+                // initialize game objects
                 InitializeGameObjects(this.NumberOfAnimals);
 
                 animator = new Thread(Run);
@@ -95,15 +122,29 @@ namespace ChickenShooter.Model
             running = false;
         }
 
+        public void Resume()
+        {
+            Run();
+        }
+
         public static long NanoTime
         {
             get { return (long)(Stopwatch.GetTimestamp() / (Stopwatch.Frequency / 1000000000.0)); }
-        } 
+        }
+
+        private void ResetGameStats()
+        {
+            ShotsLeft = 10;
+            NumberOfAnimals = 10;
+            GameSpeed = 5;
+            Stage = Level.ID;
+        }
 
         public void Run()
         {
             running = true;
-            LoadGraphics();
+            Level.LoadGraphics();
+            ResetGameStats();
 
             long lastTime = NanoTime;
             double fps = 60.0;
@@ -118,161 +159,62 @@ namespace ChickenShooter.Model
 
                 if (dt >= 1)
                 {
-                    Update(dt);
+                    Level.Update(dt);
                     dt--;
                 }
-                Render(dt);
+                Level.Render(dt);
                 Thread.Sleep(10);
             }
         }
-        private void Update(double dt)
-        {
-            // Remove animals from list that are on the hitlist
-            DetermineTargets(Actions.ShotsFired);
-            KillTargets();
 
-            // Move player
-            PlayerMovement();
-            
-            // Move animals
-            CalculateMovement();
+        public void SwitchLevel(BaseLevelState level)
+        {
+            Stop();
+            GameView.ClearElements();
+
+            SetLevel(level);
+            Resume();
         }
 
-        private void PlayerMovement()
+        public void EndGame()
         {
-            player.XTrajectory = player.X + Actions.Moves.PlayerMoves[0];
-            player.YTrajectory = player.Y + Actions.Moves.PlayerMoves[1];
-            player.XTrajectory = player.XTrajectory > Width - player.Size ? Width - player.Size : player.XTrajectory;
-            player.XTrajectory = player.XTrajectory < 0 ? 0 : player.XTrajectory;
-            player.YTrajectory = player.YTrajectory > Height - player.Size * 2 ? Height - player.Size : player.YTrajectory;
-            player.YTrajectory = player.YTrajectory < 0 ? 0 : player.YTrajectory;
-            Actions.Moves.Reset();
-        }
-
-        private void DetermineTargets(Stack<Bullet> bullets)
-        {
-            foreach (Bullet bullet in bullets)
-            {
-                foreach (Animal animal in animals)
-                {
-                    if (animal.IsShot(bullet.X, bullet.Y))
-                    {
-                        Score += 10;
-                        hitlist.Push(animal);
-                    }
-                }
-            }
-            Actions.ShotsFired.Clear();
-            // End game if no more shots left
-            if (ShotsLeft == 0)
-                EndGame();
-        }
-
-        private void CalculateMovement()
-        {
-            Random rnd = new Random();
-            foreach (Animal animal in animals)
-            {
-                double compareX = Math.Abs(animal.XPosition - player.X);
-                double compareY = Math.Abs(animal.YPosition - player.Y);
-                if (compareX < 10 && compareY < 10) 
-                    EndGame();
-
-                // Horizontal movement
-                if (animal.XTrajectory < Width - (animal.Size + 15) && animal.XTrajectory > 0)
-                {
-                    animal.HorizontalMovement();
-                }
-                else
-                {
-                    animal.ChangeHorizontalDirection();
-                    animal.HorizontalMovement();
-                }
-                // Vertical movement
-                if (animal.YTrajectory < Height - (animal.Size * 2) && animal.YTrajectory > 0)
-                {
-                    animal.VerticalMovement();
-                }
-                else
-                {
-                    animal.ChangeVerticalDirection();
-                    animal.VerticalMovement();
-                }
-            }
-        }
-
-        private void KillTargets()
-        {
-            foreach (Animal animal in hitlist)
-            {
-                animals.Remove(animal);
-            }
-            // End game if all animals are dead
-            if (animals.Count == 0)
-                EndGame();
-        }
-
-        private void Render(double dt)
-        {
-            if (!gameOver)
-            {
-                // Remove animals in hitlist from screen
-                while (hitlist.Count != 0)
-                    GameView.Remove(hitlist.Pop().Image);
-
-                GameView.Render(animals, player);
-            }
-        }
-
-        private void LoadGraphics()
-        {
-            if (animals != null)
-            {
-                GameView.Initialize(animals, player);
-            }
+            Stop();
+            GameView.EndGame(Score);
         }
 
         public void InitializeGameObjects(int animalCount)
         {
-            animals = new List<Animal>();
-            hitlist = new Stack<Animal>();
+            Animals = new List<Animal>();
+            Hitlist = new Stack<Animal>();
             // Create player
-            player = new Player(); 
+            Player = new Player();
 
             Random rnd = new Random();
             for (int i = 0; i < animalCount; i++)
             {
                 // Generate random index
-                int ind = rnd.Next(0, breeds.Count);
+                int ind = rnd.Next(0, Breeds.Count);
                 // Create animal using factory
-                Animal animal = breeds[ind].CreateAnimal();
+                Animal animal = Breeds[ind].CreateAnimal();
                 // Set x and y
                 animal.XPosition = rnd.Next(animal.Size * 2, Width - animal.Size * 2);
                 animal.YPosition = rnd.Next(animal.Size * 2, Height - animal.Size * 2);
 
-                animals.Add(animal);
+                Animals.Add(animal);
             }
         }
 
         /// <summary>
         /// Load animals from ANIMAL_FILE
         /// </summary>
-        private void LoadAnimals()
+        public void LoadAnimals()
         {
             // Create streamreader and read animal JSON file
             using (StreamReader r = new StreamReader(ANIMAL_FILE))
             {
                 string json = r.ReadToEnd();
-                breeds = JsonConvert.DeserializeObject<List<Breed>>(json);
+                Breeds = JsonConvert.DeserializeObject<List<Breed>>(json);
             }
         }
-
-        private void EndGame()
-        {
-            Stop();
-            GameView.EndGame(Score);
-        }
-
-        public Player player { get; set; }
     }
 }

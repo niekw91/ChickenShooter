@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace ChickenShooter
@@ -33,6 +34,16 @@ namespace ChickenShooter
             this.Width = width;
 
             this.MouseLeftButtonDown += Shoot;
+        }
+
+        public void SetBackground(string path)
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                ImageBrush ib = new ImageBrush();
+                ib.ImageSource = new BitmapImage(new Uri(path, UriKind.Relative));
+                this.Background = ib;
+            }));
         }
 
         public void AddController(GameController gameController)
@@ -89,6 +100,16 @@ namespace ChickenShooter
 
         private void CreateLabels()
         {
+            // Create stage level label
+            Label lblStage = new Label();
+            lblStage.FontSize = 20;
+            lblStage.Foreground = Brushes.White;
+            lblStage.FontWeight = FontWeights.Bold;
+            Label lblCurrStage = new Label();
+            lblCurrStage.Content = String.Format("Stage ");
+            lblCurrStage.FontSize = 20;
+            lblCurrStage.Foreground = Brushes.White;
+            lblCurrStage.FontWeight = FontWeights.Bold;
             // Create shots left label
             Label lblShots = new Label();
             lblShots.FontSize = 20;
@@ -103,9 +124,19 @@ namespace ChickenShooter
             Binding binding = new Binding("ShotsLeft");
             binding.Source = game;
             lblShots.SetBinding(Label.ContentProperty, binding);
+            // Create binding stage
+            Binding stage = new Binding("Stage");
+            stage.Source = game;
+            lblStage.SetBinding(Label.ContentProperty, stage);
             // Add elements to canvas
+            this.Children.Add(lblCurrStage);
+            this.Children.Add(lblStage);
             this.Children.Add(lblShotsLeft);
             this.Children.Add(lblShots);
+            Canvas.SetLeft(lblCurrStage, 10);
+            Canvas.SetTop(lblCurrStage, 10);
+            Canvas.SetLeft(lblStage, 70);
+            Canvas.SetTop(lblStage, 10);
             Canvas.SetRight(lblShotsLeft, 80);
             Canvas.SetTop(lblShotsLeft, 10);
             Canvas.SetRight(lblShots, 50);
@@ -127,6 +158,14 @@ namespace ChickenShooter
             this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
                 this.Children.Remove(img);
+            }));
+        }
+
+        public void ClearElements()
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                this.Children.Clear();
             }));
         }
 

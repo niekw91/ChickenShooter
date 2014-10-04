@@ -76,9 +76,14 @@
   <ItemGroup>
     <Compile Include="Model\ActionContainer.cs" />
     <Compile Include="Model\Animal.cs" />
+    <Compile Include="Model\BaseLevelState.cs" />
     <Compile Include="Model\Breed.cs" />
     <Compile Include="Model\Bullet.cs" />
     <Compile Include="Model\Game.cs" />
+    <Compile Include="Model\LevelFactory.cs" />
+    <Compile Include="Model\LevelFinished.cs" />
+    <Compile Include="Model\LevelOne.cs" />
+    <Compile Include="Model\LevelTwo.cs" />
     <Compile Include="Model\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -116,6 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\player.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\background-stage-2.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
