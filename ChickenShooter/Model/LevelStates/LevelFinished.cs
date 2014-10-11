@@ -15,6 +15,7 @@ namespace ChickenShooter.Model
 
         public override void Update(double dt)
         {
+            game.GameView.PrepareEndGame();
             game.EndGame();
         }
 

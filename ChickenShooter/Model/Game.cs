@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ChickenShooter.Model.UnitStates;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -79,7 +80,11 @@ namespace ChickenShooter.Model
             // Create levels
             new LevelOne(this, @"../../Images/background.jpg");
             new LevelTwo(this, @"../../Images/background-stage-2.jpg");
-            new LevelFinished(this, null);
+            new LevelFinished(this, @"../../Images/background-stage-gameover.jpg");
+
+            // Create states
+            new UnitMoveLeftState("MovingLeft");
+            new UnitMoveRightState("MovingRight");
 
             // Set game level
             SetLevel(LevelFactory.GetFirstLevel());
@@ -173,6 +178,14 @@ namespace ChickenShooter.Model
             GameView.ClearElements();
 
             SetLevel(level);
+
+            if (level.ID != -1)
+            {
+                GameView.DrawLoadingNext(Score);
+                Thread.Sleep(5000);
+                GameView.ClearElements();
+            }
+
             Resume();
         }
 

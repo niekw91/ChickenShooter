@@ -76,15 +76,19 @@
   <ItemGroup>
     <Compile Include="Model\ActionContainer.cs" />
     <Compile Include="Model\Animal.cs" />
-    <Compile Include="Model\BaseLevelState.cs" />
+    <Compile Include="Model\LevelStates\BaseLevelState.cs" />
+    <Compile Include="Model\UnitStates\BaseUnitState.cs" />
     <Compile Include="Model\Breed.cs" />
     <Compile Include="Model\Bullet.cs" />
     <Compile Include="Model\Game.cs" />
-    <Compile Include="Model\LevelFactory.cs" />
-    <Compile Include="Model\LevelFinished.cs" />
-    <Compile Include="Model\LevelOne.cs" />
-    <Compile Include="Model\LevelTwo.cs" />
+    <Compile Include="Model\LevelStates\LevelFactory.cs" />
+    <Compile Include="Model\LevelStates\LevelFinished.cs" />
+    <Compile Include="Model\LevelStates\LevelOne.cs" />
+    <Compile Include="Model\LevelStates\LevelTwo.cs" />
     <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\UnitStates\StateFactory.cs" />
+    <Compile Include="Model\UnitStates\UnitMoveLeftState.cs" />
+    <Compile Include="Model\UnitStates\UnitMoveRightState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -124,6 +128,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\background-stage-2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\background-stage-gameover.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -5,41 +5,60 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace ChickenShooter.Model
 {
-    public class LevelOne : BaseLevelState
+    public abstract class BaseLevelState
     {
-        public LevelOne(Game game, string bg)
-            : base(game, 1, bg)
+        protected Game game;
+        protected string bg;
+
+        public int ID { get; set; }
+
+        protected List<Animal> animals { get { return game.Animals; } }
+        protected Stack<Animal> hitlist { get { return game.Hitlist; } }
+        protected List<Breed> breeds { get { return game.Breeds; } }
+        protected Player player { get { return game.Player; } }
+        protected ActionContainer Actions { get { return game.Actions; } }
+
+        public BaseLevelState() { }
+
+        public BaseLevelState(Game game, int id, string bg)
         {
+            this.game = game;
+            ID = id;
+            this.bg = bg;
+            LevelFactory.Assign(this);
         }
 
-        public override void Update(double dt)
-        {
-            // Remove animals from list that are on the hitlist
-            DetermineTargets(Actions.ShotsFired);
+        public abstract void Update(double dt);
+        public abstract void Render(double dt);
 
-            // Move player
-            PlayerMovement();
-            
-            // Move animals
-            CalculateMovement();
-        }
 
-        public override void Render(double dt)
+        public void LoadGraphics()
         {
-            if (!game.gameOver)
+            // Set level background
+            game.GameView.SetBackground(bg);
+            // Draw objects
+            if (animals != null)
             {
-                // Remove animals in hitlist from screen
-                while (hitlist.Count != 0)
-                    game.GameView.Remove(hitlist.Pop().Image);
-
-                game.GameView.Render(animals, player);
+                game.GameView.Initialize(animals, player);
             }
         }
 
-        private void PlayerMovement()
+        protected void NextLevel()
+        {
+            BaseLevelState next = LevelFactory.NextLevel(this);
+
+            if (next == null)
+                next = LevelFactory.Finished();
+
+            game.SwitchLevel(next);
+        }
+
+        protected void PlayerMovement()
         {
             player.XTrajectory = player.X + Actions.Moves.PlayerMoves[0];
             player.YTrajectory = player.Y + Actions.Moves.PlayerMoves[1];
@@ -50,7 +69,7 @@ namespace ChickenShooter.Model
             Actions.Moves.Reset();
         }
 
-        private void DetermineTargets(Stack<Bullet> bullets)
+        protected void DetermineTargets(Stack<Bullet> bullets)
         {
             foreach (Bullet bullet in bullets)
             {
@@ -59,6 +78,7 @@ namespace ChickenShooter.Model
                     if (animal.IsShot(bullet.X, bullet.Y))
                     {
                         game.Score += 10;
+                        animal.Shot = true;
                         hitlist.Push(animal);
                     }
                 }
@@ -69,14 +89,14 @@ namespace ChickenShooter.Model
                 NextLevel();
         }
 
-        private void CalculateMovement()
+        protected void CalculateMovement()
         {
             Random rnd = new Random();
             foreach (Animal animal in animals)
             {
                 double compareX = Math.Abs(animal.XPosition - player.X);
                 double compareY = Math.Abs(animal.YPosition - player.Y);
-                if (compareX < 10 && compareY < 10)
+                if (compareX < 10 && compareY < 10 && !animal.Shot)
                     game.EndGame();
 
                 // Horizontal movement

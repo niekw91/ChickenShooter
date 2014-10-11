@@ -153,6 +153,25 @@ namespace ChickenShooter
             trans.BeginAnimation(TranslateTransform.YProperty, anim2);
         }
 
+        public void DrawLoadingNext(int score)
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                // Create stage level label
+                Label lblScore = new Label();
+                lblScore.Content = String.Format("Loading Next Level\nCurrent Score is {0}", score);
+                lblScore.FontSize = 20;
+                lblScore.Foreground = Brushes.White;
+                lblScore.FontWeight = FontWeights.Bold;
+
+                // Add elements to canvas
+                this.Children.Add(lblScore);
+
+                Canvas.SetLeft(lblScore, (game.Width / 2.7));
+                Canvas.SetTop(lblScore, (game.Height / 2.5));
+            }));
+        }
+
         public void Remove(Image img)
         {
             this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
@@ -169,19 +188,28 @@ namespace ChickenShooter
             }));
         }
 
+        public void PrepareEndGame()
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                this.Children.Clear();
+            }));
+        }
+
         public void EndGame(int score)
         {
             this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
                 // Create label
                 Label lblEnd = new Label();
-                lblEnd.Content = String.Format("Game Over, you scored {0}!", game.Score);
-                lblEnd.FontSize = 26;
+                lblEnd.Content = String.Format("You scored {0}!", game.Score);
+                lblEnd.FontSize = 28;
+                lblEnd.Foreground = Brushes.White;
 
                 this.Children.Add(lblEnd);
 
                 Canvas.SetTop(lblEnd, (game.Height / 2.5));
-                Canvas.SetLeft(lblEnd, (game.Width / 3.5));
+                Canvas.SetLeft(lblEnd, (game.Width / 2.7));
             }));
         }
     }

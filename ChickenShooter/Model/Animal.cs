@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChickenShooter.Model.UnitStates;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,9 @@ namespace ChickenShooter.Model
         public double YTrajectory { get; set; }
         public bool IsMovingDown { get; set; }
         public bool IsMovingRight { get; set; }
+        public bool Shot { get; set; }
+
+        private BaseUnitState state;
 
 
         private Random rnd = new Random();
@@ -56,6 +60,12 @@ namespace ChickenShooter.Model
             Image.Width = Size;
             Image.Height = Size;
             Image.Source = bitmap;
+        }
+
+        public void SetState(BaseUnitState state)
+        {
+            if (state != null)
+                this.state = state;
         }
 
         public void HorizontalMovement()
@@ -98,6 +108,10 @@ namespace ChickenShooter.Model
         public void ChangeHorizontalDirection()
         {
             IsMovingRight = !IsMovingRight;
+            if (IsMovingRight)
+                SetState(StateFactory.GetState("MovingRight"));
+            else
+                SetState(StateFactory.GetState("MovingLeft"));
         }
         public void ChangeVerticalDirection()
         {
